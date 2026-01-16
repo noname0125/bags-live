@@ -1,0 +1,211 @@
+---
+
+## 🔌 Backend Integration Guide
+
+The frontend is ready for backend integration. Here's what needs to be connected:
+
+### 1. Set Up Supabase
+
+```bash
+# Install Supabase client
+npm install @supabase/supabase-js
+
+# Install Supabase Auth helpers for Next.js (optional)
+npm install @supabase/auth-helpers-nextjs
+```
+
+### 2. Environment Variables
+
+Create `.env.local` in the root directory:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### 3. Create Supabase Client
+
+Create `src/lib/supabase.ts`:
+
+```typescript
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+```
+
+### 4. Database Schema
+
+Recommended Supabase tables:
+
+**`streams` table:**
+```sql
+create table streams (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  creator_address text not null,
+  creator_display_name text,
+  token_address text not null,
+  token_symbol text not null,
+  token_name text not null,
+  stream_key text not null,
+  is_live boolean default false,
+  viewer_count integer default 0,
+  peak_viewers integer default 0,
+  started_at timestamp with time zone default now(),
+  ended_at timestamp with time zone,
+  created_at timestamp with time zone default now()
+);
+```
+
+**`chat_messages` table:**
+```sql
+create table chat_messages (
+  id uuid primary key default uuid_generate_v4(),
+  stream_id uuid references streams(id),
+  user_address text not null,
+  user_display_name text,
+  message text not null,
+  created_at timestamp with time zone default now()
+);
+```
+
+**`tokens` table:**
+```sql
+create table tokens (
+  address text primary key,
+  symbol text not null,
+  name text not null,
+  logo_url text,
+  price numeric,
+  price_change_24h numeric,
+  market_cap numeric,
+  volume_24h numeric,
+  updated_at timestamp with time zone default now()
+);
+```
+
+### 5. Replace Mock Data
+
+**In `src/data/mockStreams.ts`, replace with Supabase queries:**
+
+```typescript
+import { supabase } from '@/lib/supabase'
+
+export async function getLiveStreams() {
+  const { data, error } = await supabase
+    .from('streams')
+    .select('*')
+    .eq('is_live', true)
+    .order('started_at', { ascending: false })
+  
+  return data || []
+}
+
+export async function getStreamById(id: string) {
+  const { data, error } = await supabase
+    .from('streams')
+    .select('*')
+    .eq('id', id)
+    .single()
+  
+  return data
+}
+```
+
+### 6. Real-time Chat
+
+**Update `src/components/viewer/ChatSection.tsx` to use Supabase Realtime:**
+
+```typescript
+useEffect(() => {
+  const channel = supabase
+    .channel(`chat:${streamId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'chat_messages',
+        filter: `stream_id=eq.${streamId}`,
+      },
+      (payload) => {
+        setMessages((prev) => [...prev, payload.new as ChatMessage])
+      }
+    )
+    .subscribe()
+
+  return () => {
+    supabase.removeChannel(channel)
+  }
+}, [streamId])
+```
+
+### 7. Wallet Integration
+
+**Install Solana wallet adapter:**
+
+```bash
+npm install @solana/wallet-adapter-react @solana/wallet-adapter-wallets @solana/web3.js
+```
+
+**Update `src/components/shared/WalletButton.tsx` to use actual wallet:**
+
+```typescript
+import { useWallet } from '@solana/wallet-adapter-react'
+
+export function WalletButton() {
+  const { connected, connecting, publicKey, disconnect } = useWallet()
+  // ... use actual wallet state instead of mock
+}
+```
+
+---
+
+## 🛠️ Development Workflow
+
+### Adding a New Component
+
+```bash
+# Use shadcn/ui CLI to add components
+npx shadcn@latest add [component-name]
+
+# Example:
+npx shadcn@latest add select
+```
+
+### File Naming Conventions
+
+- **Pages**: `page.tsx` (Next.js App Router convention)
+- **Components**: PascalCase (e.g., `HeroSection.tsx`)
+- **Utilities**: camelCase (e.g., `utils.ts`)
+- **Types**: `index.ts` in types folder
+
+### Code Organization
+
+- **Server Components**: Default in App Router
+- **Client Components**: Add `"use client"` directive
+- **Shared logic**: Extract to `src/lib/`
+- **Constants**: Keep in `src/lib/constants.ts`
+
+---
+
+## 🔐 Environment Variables
+
+When adding backend, create `.env.local`:
+
+```env
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional: HLS streaming server
+NEXT_PUBLIC_STREAM_SERVER_URL=rtmp://your-stream-server.com/live
+
+# Optional: Solana RPC endpoint
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.mainnet-beta.solana.com
+```
+
+---
