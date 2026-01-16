@@ -45,8 +45,7 @@ export function Footer() {
               rel="noopener noreferrer"
               className="text-sm font-medium text-muted-foreground hover:text-green-400 transition-colors flex items-center gap-1"
             >
-              X (Twitter)
-              <span className="text-[10px]">↗</span>
+              X
             </a>
           </nav>
         </div>

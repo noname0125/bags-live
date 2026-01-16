@@ -13,6 +13,18 @@ import { ChatSection } from "@/components/viewer/ChatSection";
 import { getStreamById, getTokenByAddress, mockTokens } from "@/data/mockStreams";
 import { ROUTES } from "@/lib/constants";
 
+function formatTimeAgo(date: Date): string {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / 86400000);
+  const hours = Math.floor(diff / 3600000);
+  const minutes = Math.floor(diff / 60000);
+
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  return `${minutes}m ago`;
+}
+
 export default function StreamViewerPage() {
   const params = useParams();
   const streamId = params.id as string;
@@ -41,11 +53,7 @@ export default function StreamViewerPage() {
                   Back
                 </Link>
               </Button>
-              <div className="hidden sm:flex items-center gap-2">
-                <Badge className="bg-green-500/10 text-green-400 border-green-500/20 font-mono">
-                  ${token.symbol}
-                </Badge>
-              </div>
+
             </div>
             <Button variant="ghost" size="sm" className="gap-2 text-muted-foreground hover:text-white" onClick={copyShareLink}>
               <Share2 className="w-4 h-4" />
@@ -93,7 +101,7 @@ export default function StreamViewerPage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-4 h-4" />
-                    Started 2h ago
+                    Started {formatTimeAgo(stream.startedAt)}
                   </span>
                 </div>
               </div>
@@ -117,26 +125,7 @@ export default function StreamViewerPage() {
                 </Button>
               </div>
 
-              {/* Token Info */}
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-400 font-bold">
-                      {token.symbol[0]}
-                    </div>
-                    <div>
-                      <p className="font-medium">{token.name}</p>
-                      <p className="text-sm text-green-400 font-mono">${token.symbol}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-mono font-medium">${token.price?.toFixed(token.price < 1 ? 6 : 2)}</p>
-                    <p className={`text-sm ${(token.priceChange24h || 0) >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {(token.priceChange24h || 0) >= 0 ? '+' : ''}{token.priceChange24h?.toFixed(2)}%
-                    </p>
-                  </div>
-                </div>
-              </div>
+
             </motion.div>
           </div>
 

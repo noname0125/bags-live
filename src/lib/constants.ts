@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   description: "The premier crypto livestreaming platform for token communities",
   tagline: "Stream Your Bags",
   domain: "bagslive.io",
-  twitter: "https://x.com/bagslive",
+  twitter: "https://x.com/BagsLiveSOL",
 };
 
 export const ROUTES = {

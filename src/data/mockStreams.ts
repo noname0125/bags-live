@@ -14,82 +14,22 @@ const getAvatarColor = (name: string) => {
 export const mockStreams: Stream[] = [
   {
     id: "1",
-    title: "$SOL - watching this breakout 👀",
+    title: "Launch Time",
     creator: {
       address: "7xKX...3mNp",
       displayName: "SolanaAlpha",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+      avatar: "", // Image URL here if needed
     },
     token: {
       address: "So11111111111111111111111111111111111111112",
       symbol: "SOL",
       name: "Solana",
     },
-    thumbnail: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&auto=format&fit=crop&q=80",
-    viewerCount: 1247,
-    peakViewers: 1850,
+    thumbnail: "", // Image URL here if needed
+    viewerCount: 34,
+    peakViewers: 34,
     isLive: true,
-    startedAt: new Date(Date.now() - 2400000),
-  },
-  {
-    id: "2",
-    title: "$JUP looking strong here",
-    creator: {
-      address: "9aBC...xYz2",
-      displayName: "JupiterTrader",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
-    },
-    token: {
-      address: "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
-      symbol: "JUP",
-      name: "Jupiter",
-    },
-    thumbnail: "https://plus.unsplash.com/premium_photo-1664297604107-061748386611?w=800&auto=format&fit=crop&q=80",
-    viewerCount: 856,
-    peakViewers: 1100,
-    isLive: true,
-    startedAt: new Date(Date.now() - 5400000),
-  },
-  {
-    id: "3",
-    title: "$WIF support levels explained",
-    creator: {
-      address: "4dEF...kLm9",
-      displayName: "WifDAO",
-      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&h=100&fit=crop",
-    },
-    token: {
-      address: "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm",
-      symbol: "WIF",
-      name: "dogwifhat",
-    },
-    thumbnail: "https://images.unsplash.com/photo-1535320903710-d993d3d77d29?w=800&auto=format&fit=crop&q=80",
-    viewerCount: 0,
-    peakViewers: 2100,
-    isLive: false,
-    startedAt: new Date(Date.now() - 86400000),
-    endedAt: new Date(Date.now() - 82800000),
-    duration: 3600000,
-  },
-  {
-    id: "4",
-    title: "$BONK - daily TA session",
-    creator: {
-      address: "2gHI...nOp5",
-      displayName: "BonkMaster",
-    },
-    token: {
-      address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263",
-      symbol: "BONK",
-      name: "Bonk",
-    },
-    thumbnail: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&auto=format&fit=crop&q=80",
-    viewerCount: 0,
-    peakViewers: 1650,
-    isLive: false,
-    startedAt: new Date(Date.now() - 172800000),
-    endedAt: new Date(Date.now() - 165600000),
-    duration: 7200000,
+    startedAt: new Date(Date.now() - 60000), // 1 minute ago
   },
 ];
 
